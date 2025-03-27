@@ -17,12 +17,15 @@ import jyplord.calender.Entity.UserEntity;
 import jyplord.calender.Repository.PlanRepository;
 
 import jyplord.calender.Repository.UserRepository;
+import jyplord.calender.UserInvalidException;
 import lombok.RequiredArgsConstructor;
 
+import lombok.extern.log4j.Log4j2;
 import org.springframework.stereotype.Service;
 
 
 @Service
+@Log4j2
 @RequiredArgsConstructor
 public class PlanService{
     private final PlanRepository planRepository;
@@ -35,6 +38,7 @@ public class PlanService{
             planRepository.savePlan(dto);
             return true;
         }catch (SQLException error){
+            log.error(error.getMessage());
             return false;
         }
 
@@ -49,7 +53,7 @@ public class PlanService{
             return planRepository.findByID(planEntity, page);
 
         }catch (SQLException sqlError){
-            sqlError.printStackTrace();
+            log.error(sqlError.getMessage());
 
             //예외일 때 빈 리스트 리턴
             return Collections.emptyList();
@@ -69,10 +73,13 @@ public class PlanService{
                 planRepository.revisePlan(dto.getUserID(),dto.getPlan());
                 return true;
             }else {
-                return false;
+                throw new UserInvalidException("Invalid Password");
             }
         }catch (SQLException sqlError){
-            sqlError.printStackTrace();
+           log.error(sqlError);
+            return false;
+        }catch (UserInvalidException passwordError){
+            log.error(passwordError);
             return false;
         }
 
@@ -85,11 +92,14 @@ public class PlanService{
                 planRepository.deletePlan(dto.getPlan());
                 return true;
             }else {
-                return false;
+                throw new UserInvalidException("Invalid Password");
             }
 
         }catch (SQLException e){
-            e.printStackTrace();
+            log.error(e);
+            return false;
+        }catch (UserInvalidException passwordError){
+            log.error(passwordError);
             return false;
         }
 

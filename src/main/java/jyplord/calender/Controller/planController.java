@@ -1,6 +1,7 @@
 package jyplord.calender.Controller;
 
 
+import jakarta.validation.Valid;
 import jyplord.calender.DTO.request.DeleteRequest;
 import jyplord.calender.DTO.request.ReviseRequest;
 import jyplord.calender.DTO.request.SaveRequest;
@@ -26,7 +27,7 @@ public class planController {
     }
 
     @PostMapping(value = "/planner" , consumes = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<String> planning(@RequestBody SaveRequest dto){
+    public ResponseEntity<String> planning(@RequestBody @Valid SaveRequest dto){
         boolean result = planService.savePlan(dto);
         if(result){
             return ResponseEntity.ok("Save complete!");
@@ -44,7 +45,7 @@ public class planController {
 
     //글, 이름 수정
     @PutMapping(value = "/planner/revise", consumes = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<String> revisePlan(@RequestBody ReviseRequest dto){
+    public ResponseEntity<String> revisePlan(@RequestBody @Valid ReviseRequest dto){
         boolean result = planService.revisePlan(dto);
         if(result){
             return ResponseEntity.ok("Revised Complete!");
@@ -55,7 +56,7 @@ public class planController {
 
 
     @DeleteMapping(value = "/planner/list", consumes = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<String> deletePlan(DeleteRequest dto){
+    public ResponseEntity<String> deletePlan(@RequestBody @Valid DeleteRequest dto){
         boolean result = planService.deletePlan(dto);
         if(result){
             return ResponseEntity.ok("Delete Complete!");
