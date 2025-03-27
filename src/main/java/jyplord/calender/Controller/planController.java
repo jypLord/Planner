@@ -1,50 +1,67 @@
 package jyplord.calender.Controller;
 
-import jyplord.calender.DTO.planningDTO;
 
-import jyplord.calender.Service.CalendarService;
+import jyplord.calender.DTO.request.DeleteRequest;
+import jyplord.calender.DTO.request.ReviseRequest;
+import jyplord.calender.DTO.request.SaveRequest;
+import jyplord.calender.DTO.response.PlanResponse;
+import jyplord.calender.Service.PlanService;
 import org.springframework.http.MediaType;
 
 
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDateTime;
-import java.util.ArrayList;
+import java.util.List;
 
 
 @RestController
 public class planController {
-    private final CalendarService calendarService;
+    private final PlanService planService;
 
     //생성자 주입
-    public planController(CalendarService calendarService) {
-        this.calendarService = calendarService;
+    public planController(PlanService plannerService) {
+        this.planService = plannerService;
     }
 
     @PostMapping(value = "/planner" , consumes = MediaType.APPLICATION_JSON_VALUE)
-    public String planning(@RequestBody planningDTO dto){
-        calendarService.savePlan(dto);
+    public ResponseEntity<String> planning(@RequestBody SaveRequest dto){
+        boolean result = planService.savePlan(dto);
+        if(result){
+            return ResponseEntity.ok("Save complete!");
+        }else{
+            return ResponseEntity.badRequest().body("Save Failed");
+        }
 
-        return "";
     }
 
 
     @GetMapping(value = "/planner/list")
-    public ArrayList<planningDTO> getPlanList(@RequestParam String id , @RequestParam LocalDateTime writeDate, @RequestParam int paging){
-        return calendarService.getPlanList(id, writeDate, paging);
+    public List<PlanResponse> getPlanList(@RequestParam String id , @RequestParam LocalDateTime writeDate, @RequestParam int paging){
+        return planService.getPlanList(id, writeDate, paging);
     }
 
     //글, 이름 수정
     @PutMapping(value = "/planner/revise", consumes = MediaType.APPLICATION_JSON_VALUE)
-    public String revisePlan(planningDTO dto){
-        calendarService.revisePlan(dto);
-        return "";
+    public ResponseEntity<String> revisePlan(@RequestBody ReviseRequest dto){
+        boolean result = planService.revisePlan(dto);
+        if(result){
+            return ResponseEntity.ok("Revised Complete!");
+        }else {
+            return ResponseEntity.badRequest().body("Revise Failed");
+        }
     }
 
+
     @DeleteMapping(value = "/planner/list", consumes = MediaType.APPLICATION_JSON_VALUE)
-    public String deletePlan(planningDTO dto){
-        calendarService.deletePlan(dto);
-        return "";
+    public ResponseEntity<String> deletePlan(DeleteRequest dto){
+        boolean result = planService.deletePlan(dto);
+        if(result){
+            return ResponseEntity.ok("Delete Complete!");
+        }else{
+            return ResponseEntity.badRequest().body("Delete Failed");
+        }
     }
 }
 

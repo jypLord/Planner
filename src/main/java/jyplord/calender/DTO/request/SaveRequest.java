@@ -1,6 +1,5 @@
 package jyplord.calender.DTO.request;
 
-import jyplord.calender.DTO.DTO;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 
@@ -8,8 +7,9 @@ import java.time.LocalDateTime;
 
 @Getter
 @RequiredArgsConstructor
-public class PlanRequest implements DTO {
+public class SaveRequest {
     private final String userID;
+    private final String name;
+    private final String plan;
     private final LocalDateTime writeDate;
-    private final int page;
 }
