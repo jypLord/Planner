@@ -6,7 +6,7 @@ import org.springframework.stereotype.Repository;
 import java.sql.*;
 
 @Repository
-public class UserRepository{
+public class UserRepository {
     private Connection connection;
 
     public UserEntity findByID(UserEntity entity) throws SQLException {
@@ -22,7 +22,21 @@ public class UserRepository{
         return new UserEntity(user.getInt("id"),
                 user.getString("user_id"),
                 user.getString("name"),
-                user.getString("password"));
+                user.getString("password"),
+                user.getString("email"));
 
+    }
+
+    public void signUp(UserEntity entity) throws SQLException {
+        connection = DriverManager.getConnection("jdbc:mysql://localhost:3306/Calendar", "1234", "1234");
+
+        String query = "INSERT INTO users (userID, name, password, email) VALUES (?,?,?,?)";
+        PreparedStatement preparedStatement = connection.prepareStatement(query);
+        preparedStatement.setString(1, entity.getUserID());
+        preparedStatement.setString(2, entity.getName());
+        preparedStatement.setString(3, entity.getUserID());
+        preparedStatement.setString(4, entity.getEmail());
+
+        preparedStatement.executeUpdate();
     }
 }
