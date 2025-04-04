@@ -1,12 +1,12 @@
 package jyplord.calender.Controller;
 
 
+import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
 import jyplord.calender.DTO.request.DeleteRequest;
 import jyplord.calender.DTO.request.ReviseRequest;
 import jyplord.calender.DTO.request.SaveRequest;
-import jyplord.calender.DTO.request.SignUpRequest;
-import jyplord.calender.DTO.response.PlanResponse;
+import jyplord.calender.DTO.response.AllPlanResponse;
 import jyplord.calender.Service.PlanService;
 import org.springframework.http.MediaType;
 
@@ -14,41 +14,40 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import javax.print.attribute.standard.Media;
-import java.time.LocalDateTime;
 import java.util.List;
 
 
 @RestController
-public class planController {
+public class PlanController {
     private final PlanService planService;
 
     //생성자 주입
-    public planController(PlanService plannerService) {
+    public PlanController(PlanService plannerService) {
         this.planService = plannerService;
     }
 
-    @PostMapping(value = "/planner" , consumes = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<String> planning(@RequestBody @Valid SaveRequest dto){
-        boolean result = planService.savePlan(dto);
-        if(result){
-            return ResponseEntity.ok("Save complete!");
-        }else{
-            return ResponseEntity.badRequest().body("Save Failed");
-        }
+    @PostMapping(value = "/plans")
+    public ResponseEntity<String> planning(@RequestBody @Valid SaveRequest dto,@SessionAttribute HttpSession session){
+        planService.savePlan(dto, session);
 
+        return ResponseEntity.ok("Save complete!");
     }
 
 
-    @GetMapping(value = "/planner/list")
-    public List<PlanResponse> getPlanList(@RequestParam String id , @RequestParam LocalDateTime writeDate, @RequestParam int paging){
-        return planService.getPlanList(id, writeDate, paging);
+    @GetMapping(value = "/plans/{userID}")
+    public List<AllPlanResponse> getPlanList(@PathVariable Long userID, @RequestParam(defaultValue = "0") int paging){
+        return planService.getPlanList(userID, paging);
     }
+
+    @GetMapping(value = "/plans/{id}/{planTitle}")
+    public List
+
 
     //글, 이름 수정
-    @PutMapping(value = "/planner/revise", consumes = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<String> revisePlan(@RequestBody @Valid ReviseRequest dto){
-        boolean result = planService.revisePlan(dto);
+    @PutMapping(value = "/plans/{planTitle}")
+    public ResponseEntity<String> modifyPlan(@RequestBody @Valid ReviseRequest dto,
+                                             @PathVariable String planTitle, HttpSession session){
+        boolean result = planService.modifyPlan(dto,planTitle,session);
         if(result){
             return ResponseEntity.ok("Revised Complete!");
         }else {

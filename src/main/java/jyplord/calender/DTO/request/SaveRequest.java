@@ -11,14 +11,9 @@ import java.time.LocalDateTime;
 @Getter
 @RequiredArgsConstructor
 public class SaveRequest {
-    @NotBlank(message = "ID is necessary")
-    private final String userID;
-
     @NotNull
-    private final String name;
+    private final String planTitle;
 
     @Size(max = 200, message = "Please enter less than 200 characters.")
-    private final String plan;
-
-    private final LocalDateTime writeDate;
+    private final String planBody;
 }
