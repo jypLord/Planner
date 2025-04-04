@@ -1,5 +1,6 @@
 package jyplord.calender.DTO.request;
 
+import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
@@ -7,11 +8,13 @@ import lombok.Getter;
 
 @Getter
 @AllArgsConstructor
-public class ReviseRequest {
+public class LoginRequest {
     @NotBlank
-    @Size(max = 50, message = "plz enter under 50 characters")
-    private final String planTitle;
+    @Email
+    private final String email;
 
-    @Size(max = 200, message = "plz enter under 200 characters")
-    private final String planBody;
+    @NotBlank
+    @Size(min= 4, max= 16)
+    private final String password;
+
 }

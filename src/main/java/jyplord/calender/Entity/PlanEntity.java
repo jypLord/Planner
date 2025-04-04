@@ -1,23 +1,36 @@
 package jyplord.calender.Entity;
 
-import lombok.AllArgsConstructor;
-import lombok.Getter;
+import jakarta.persistence.*;
 
-import java.math.BigDecimal;
-import java.time.LocalDateTime;
+import lombok.*;
+import org.springframework.data.annotation.Id;
 
-@Getter
-@AllArgsConstructor
-public class PlanEntity{
-    private final BigDecimal planID;
-    private final String userID;
-    private String plan;
-    private LocalDateTime writeDate;
+import java.util.ArrayList;
+import java.util.List;
 
-    public PlanEntity(String userID, LocalDateTime writeDate){
-        this.planID = null;
-        this.plan = null;
-        this.userID = userID;
-        this.writeDate = writeDate;
+
+@Entity
+@Getter @Setter
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
+public class PlanEntity extends BaseEntity{
+    
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long planID;
+
+    private String planTitle;
+    private String planBody;
+
+    @ManyToOne
+    @JoinColumn(name = "user_id", nullable = false, updatable = false)
+    private UserEntity name;
+
+    @OneToMany(mappedBy = "plan")
+    List<CommentEntity> comments = new ArrayList<>();
+
+    public PlanEntity(String planTitle ,String planBody, UserEntity name){
+        this.planTitle = planTitle;
+        this.planBody = planBody;
+        this.name = name;
     }
 }

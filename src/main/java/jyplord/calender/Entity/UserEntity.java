@@ -1,30 +1,42 @@
 package jyplord.calender.Entity;
 
+import jakarta.persistence.*;
 import lombok.Getter;
-import lombok.RequiredArgsConstructor;
+import lombok.NoArgsConstructor;
+import org.springframework.data.annotation.Id;
+import java.util.ArrayList;
+import java.util.List;
 
+
+@Entity
 @Getter
-@RequiredArgsConstructor
-public class UserEntity {
-    private final int id;
-    private final String userID;
-    private final String name;
-    private final String password;
-    private final String email;
+@NoArgsConstructor
+public class UserEntity extends BaseEntity{
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private int id;
 
-    public UserEntity(String userID, String password){
-        this.id = 0;
-        this.userID = userID;
-        this.name = null;
+    private String name;
+    private String birthDay;
+
+    @Column(unique = true)
+    private String email;
+    private String password;
+
+    public UserEntity(String name, String birthDay,String email, String password){
+        this.name = name;
+        this.birthDay = birthDay;
+        this.email = email;
         this.password = password;
-        this.email= null;
     }
 
-    /*public UserEntity(Integer id, String userID, String name , String password, String email) {
-        this.id = null;
-        this.userID = userID;
+    public UserEntity(String name){
         this.name = name;
-        this.password = password;
-        this.email = email;
-    }*/
+    }
+
+    @OneToMany(mappedBy = "user")
+    private List<PlanEntity> plans = new ArrayList<>();
+
+    @OneToMany(mappedBy = "comment")
+    private List<CommentEntity> comment = new ArrayList<>();
 }
